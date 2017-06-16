@@ -1,5 +1,5 @@
 /* Copyright 2017 Google Inc.
- * https://github.com/NeilFraser/CodeCity
+ * https://github.com/cpcallen/flatpack
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,24 +29,6 @@
 // might be encountered; it will be convenient to do so by calling
 // RegisterType and/or RegisterTypeOf from an init() func in each
 // package whose types will be serialized.
-//
-// BUG(cpcallen): Flatpack.Pack() does not handle multiple references
-// to the same map correctly.  Multiple copies of map contents will
-// be saved in the flatpack, and Unpack() will unpack them to
-// independent map structures.
-//
-// BUG(cpcallen): Flatpack.Pack() will incorrectly preserve shared (or
-// cyclic) substructure if it encounters two pointers of different
-// types that point to the same object.  (This could happen with a
-// named type and its underlying type.)
-//
-// BUG(cpcallen): Flatpack does not handle interior pointers (pointers
-// to array or struct element) correctly; this includes in particular
-// the case of slice backing arrays (even if the slice points points
-// at the 0th element of the underlying array).
-//
-// BUG(cpcallen): Flatpack does not preserve spare capacity (or the
-// values of elements in the underlying array between len and cap).
 package flatpack
 
 import (
@@ -393,3 +375,21 @@ func (f *Flatpack) unflatten(typ reflect.Type, v reflect.Value) (ret reflect.Val
 	}
 	panic("unreachable")
 }
+
+// BUG(cpcallen): Flatpack does not handle multiple references to the
+// same map correctly.  Pack()will save multiple copies of map
+// contents will in the flatpack, and Unpack() will unpack them to
+// independent map structures.
+//
+// BUG(cpcallen): Flatpack.Pack() will not correctly preserve shared
+// (or cyclic) substructure if it encounters two pointers to the same
+// object *of different types*.  (This could happen with a named type
+// and its underlying type.)
+//
+// BUG(cpcallen): Flatpack does not handle interior pointers (pointers
+// to array or struct element) correctly; this includes in particular
+// the case of slice backing arrays (even if the slice points points
+// at the 0th element of the underlying array).
+//
+// BUG(cpcallen): Flatpack does not preserve spare capacity (or the
+// values of elements in the underlying array between len and cap).

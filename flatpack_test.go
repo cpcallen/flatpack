@@ -1,5 +1,5 @@
 /* Copyright 2017 Google Inc.
- * https://github.com/NeilFraser/CodeCity
+ * https://github.com/cpcallen/flatpack
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import (
 	"reflect"
 	"testing"
 
-	"CodeCity/server/testutil"
+	"github.com/cpcallen/testutil"
 )
 
 // Some user-declared types for testing:
