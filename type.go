@@ -54,11 +54,30 @@ var byFlatType = make(map[reflect.Type]int)
 
 // RegisterTypeOf adds the (dynamic) type of its argument to the type
 // registry.
+//
+// This is just convenient shorthand for
+// RegisterType(reflect.TypeOf(val)).
 func RegisterTypeOf(val interface{}) {
 	RegisterType(reflect.TypeOf(val))
 }
 
 // RegisterType adds the given type to the type registry.
+//
+// When deserializing and unpacking an interface value, Flatpack must
+// be able to locate the (reflected) type of the value based on a
+// string tag (typename) saved in the serialized flatpack.  In order
+// to do this, Flatpack maintains an internal type registry which must
+// be pre-populated by the user with the types that Flatpack will
+// encounter.
+//
+// To do so, call this function once for each type that will appear in
+// an interface value (including top-level values) in the packed
+// structure.
+//
+// If you have registered some type T, there is no need to separately
+// register types *T or []T, but you do need to separately
+// register any [...]T, map[T]X or map[X]T.
+//
 func RegisterType(typ reflect.Type) {
 	if _, exists := byType[typ]; exists {
 		return
